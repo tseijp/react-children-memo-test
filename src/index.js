@@ -1,12 +1,17 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { useIsSwitch, useRefUpdate } from "./hooks";
+import { useForceUpdate, useIsSwitch, useRefUpdate } from "./hooks";
 import { mainStyle, itemStyle } from "./styles";
 
 const App = () => {
+  const update = useForceUpdate();
+  React.useEffect(() => {
+    window.addEventListener("keydown", update);
+    return () => window.removeEventListener("keydown", update);
+  });
   return (
     <Container fallback={<Item>FALLBACK</Item>}>
-      <Item isMemoed>CHILDREN</Item>
+      <Item>CHILDREN</Item>
     </Container>
   );
 };
@@ -17,20 +22,23 @@ const Container = ({ fallback, children }) => {
 
   return (
     <main ref={$main} style={mainStyle}>
-      <div style={{ width: "80%" }}>not memoed</div>
-      {/* not memoed 1 */}
+      {/* regenerated 1 */}
+      <div style={{ width: "80%" }}>regenerated</div>
       {!isSwitch && children}
       {isSwitch && fallback}
-      {/* not memoed 2 */}
+      {/* regenerated 2 */}
       {isSwitch ? fallback : <>{children}</>}
-      {isSwitch ? <>{fallback}</> : children}
+      {/* same */}
+      {/* {isSwitch ? <>{fallback}</> : children} */}
+      {/* not memoed */}
+      <div style={{ width: "80%" }}>not memoed</div>
+      {isSwitch ? fallback : children}
+      {/* same */}
+      {/* {isSwitch ? <>{fallback}</> : <>{children}</>} */}
+      {/* memoed */}
       <div style={{ width: "80%" }}>memoed</div>
-      {/* memoed 1 */}
       <span style={isSwitch ? { display: "none" } : {}}>{children}</span>
       <span style={isSwitch ? {} : { display: "none" }}>{fallback}</span>
-      {/* memoed 2 */}
-      {isSwitch ? fallback : children}
-      {isSwitch ? <>{fallback}</> : <>{children}</>}
     </main>
   );
 };
