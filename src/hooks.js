@@ -1,7 +1,11 @@
 import * as React from "react";
-import { useEvent } from "reev/react";
+import event from "reev";
 
 const color = () => "#" + ((Math.random() * (1 << 24)) << 0).toString(16);
+
+export const useEvent = (props) => {
+  return React.useState(() => event(props))[0];
+};
 
 export const useIsSwitch = () => {
   const i = React.useRef(0);
